@@ -1,0 +1,139 @@
+'''Code sourced from a combination of "Deformed Circles" by Eric Davidson - https://gist.github.com/erdavids & "Rotating Triangles with Processing in Python Mode"
+uploaded by Techy Math on YouTube, as well as various bits from Processing.org'''
+
+'''SETUP'''
+w, h = 700, 700 #scale of canvas
+t = 0 #text default
+
+'''COLOR AND TEXT CHANGE - mousePressed() command sourced from Processing.org'''
+def mousePressed(): #when mouse is clicked
+    global t #t variable is not local (is referenced in another function)
+    if t == 0: #default
+        t = 1 #text = Amanda
+    elif t == 1:
+        t = 2 #text = Angel
+    elif t == 2:
+        t = 3 #text = Mage
+    elif t == 3:
+        t = 4 #text = Mage
+    elif t == 4:
+        t = 0 #text = Mage
+
+'''COLOR ARRAYS - inspired by "Deformed Circles" by Eric Davidson'''
+#r,g,b,alpha (a list of lists)
+colorsAmanda = [[(96, 85, 31, 100), (96, 65, 0), (53, 18, 0, 200), (85, 42, 0)],
+                [(53, 18, 0), (96, 85, 31, 100), (85, 42, 0), (96, 65, 0)],
+                [(85, 42, 0), (53, 18, 0, 100), (96, 65, 0, 200), (96, 85, 31)]]                                                                                                                                                          
+colorsMage = [[(21, 45, 42), (171, 132, 46), (67, 111, 79, 100), (134, 123, 84)],
+              [(67, 111, 79), (21, 45, 42, 100), (134, 123, 84, 200), (171, 132, 46)],
+              [(171, 132, 46, 100), (134, 123, 84), (21, 45, 42, 200), (67, 111, 79)]]
+colorsAngel = [[(1,27,50), (61, 30, 29), (94, 96, 37, 100), (174, 102, 37, 50)],
+               [(61, 30, 29), (1,27,50), (174, 102, 37, 50), (94, 96, 37, 150)],
+               [(1,27,50), (94, 96, 37, 100), (174, 102, 37, 100), (61, 30, 29)]]
+colorsKate = [[(109, 103, 87), (33, 31, 44, 100), (77, 83, 97), (70, 80, 82)],
+              [(33, 31, 44, 100),(70, 80, 82), (77, 83, 97, 200),(109, 103, 87)],
+              [(70, 80, 82), (77, 83, 97, 100), (109, 103, 87, 200), (33, 31, 44)]]
+colorsGracie = [[(78, 39, 24, 150), (32,15,21, 200), (57, 26, 24), (110,55,30)],
+                [(78, 39, 24),(57, 26, 24, 150),(110,55,30),(32,15,21)],
+                [(32,15,21),(78, 39, 24, 200),(110,55,30),(57, 26, 24, 100)]]
+
+random_colors = int(random(3)) #picks a random number between 0-2
+
+def randomVariable(l):
+    return l[int(random(len(l)))] #returns the number of items in random_colors as an int
+
+
+'''DEFINE SHAPE VARIABLES - derived from "Deformed Circles" by Eric Davidson'''
+def shape(x, y, r, random_colors): #x = w/2, y = h/2, radius, random colors(1-3)
+    pushMatrix()#save current orientation
+    translate(w/2,h/2)#centers origin
+   
+    points = [] #creates list
+    num = map(mouseY, 0, width, 1, 100)#postion of mouse on y axis alters increment
+   
+    for i in range(0, 360, int(num)): #completes full circle, int(num) decides increase increment
+        points.append((r/2*cos(radians(i)), r/2*sin(radians(i))))#slightly moves points away from original circle
+        #cos sin is x coord, sin is y, i is degree
+        #radius is divided by 2 in order move points closer to origin
+   
+    # Create the shapes
+    final = [] #creates list
+    for p in points: #takes every established point value and divides it by 25, creates parabolas
+        x_change = p[0] / 25.0 #r/2*cos(radians(i))
+        y_change = p[1] / 25.0 #r/2*sin(radians(i))
+       
+        change = random(-5, 5)# change in intensity of peaks for each curve (bigger range crashes computer!!!)
+        p = (p[0] + x_change * change, p[1] + y_change * change)
+        final.append(p) #adds p value to the list "final"
+       
+    # define colors
+    if t == 0:
+        fill(*randomVariable(colorsAmanda[random_colors])) #refers to def randomVariable and the color library, picking a random color array from 3 options
+        stroke(*randomVariable(colorsAmanda[random_colors])) #refers to def randomVariable and the color library
+        strokeWeight(2)#line thickness
+    if t == 1:
+        fill(*randomVariable(colorsMage[random_colors])) #refers to def randomVariable and the color library, picking a random color array from 3 options
+        stroke(*randomVariable(colorsMage[random_colors])) #refers to def randomVariable and the color library
+        strokeWeight(2)#line thickness
+    if t == 2:
+        fill(*randomVariable(colorsAngel[random_colors])) #refers to def randomVariable and the color library, picking a random color array from 3 options
+        stroke(*randomVariable(colorsAngel[random_colors])) #refers to def randomVariable and the color library
+        strokeWeight(2)#line thickness
+    if t == 3:
+        fill(*randomVariable(colorsKate[random_colors])) #refers to def randomVariable and the color library, picking a random color array from 3 options
+        stroke(*randomVariable(colorsKate[random_colors])) #refers to def randomVariable and the color library
+        strokeWeight(2)#line thickness
+    if t == 4:
+        fill(*randomVariable(colorsGracie[random_colors])) #refers to def randomVariable and the color library, picking a random color array from 3 options
+        stroke(*randomVariable(colorsGracie[random_colors])) #refers to def randomVariable and the color library
+        strokeWeight(2)#line thickness
+   
+    #create shapes
+    beginShape() #begin drawing shape (begins recording vertices for a shape), values change once per frame
+    for p in final:
+        curveVertex(*p)#unpacks p[0] and p[1]
+    curveVertex(*final[0])#unpacks first three p sets
+    curveVertex(*final[1])
+    curveVertex(*final[2])
+   
+    endShape()
+    popMatrix()#returns to original orientation
+   
+
+'''ANIMATE'''
+def setup(): #sets up canvas before animation begins, called once
+    size(w, h) #canvas size
+    frameRate(7) #frames per second
+   
+    global f #font variable
+    f = createFont("TimesNewRoman", 25) #font style and size
+
+'''DRAWING SHAPES'''
+def draw(): #called each frame
+   
+    '''MOUSE MOVEMENT - inspired by "Rotating Triangles" by Techy Math on YouTube'''
+    ss = map(mouseX, 0, width, 0, width)#value, start 1, stop 1, start 2, stop 2, width of screen
+    background(0) #background color
+ 
+    while (ss >= 10): #determines initial shape
+        shape(w/2, h/2, ss, random_colors) #x, y, width, height
+        ss -= 20 #size = size - value, determines at which point a new shape is formed
+   
+    '''TEXT'''
+    textFont(f) #creates text using determined font(f)
+    fill(200) #text color
+    if t == 0: #when mouse is clicked
+        text("10.20.23 Amanda",15,40) #text and location (x, y)
+    if t == 1:
+        text("11.21.23 Mage",15, 40)
+    if t == 2:
+        text("11.22.23 Angel", 15, 40)
+    if t == 3:
+        text("12.4.23 Kate", 15, 40)
+    if t == 4:
+        text("12.8.23 Gracie", 15, 40)
+       
+
+'''SAVE IMAGE - keyPressed() command sourced from Processing.org'''
+def keyPressed(ENTER):
+        save("shapes.png") #saves an image when enter key is pressed
