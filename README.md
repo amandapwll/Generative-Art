@@ -1,0 +1,1 @@
+Generative art piece inspired by "Deformed Circles" by Eric Davidonson on YouTube. The code works by defining points along the perimeter of a circle and randomly moving the points in in different directions to create unique parabolic shapes. I was inspired by eyes (specifically the iris), and sought to represent my and my colleagues eye colors within the piece. 
